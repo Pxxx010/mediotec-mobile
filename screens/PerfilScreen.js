@@ -1,14 +1,19 @@
 // screens/PerfilScreen.js
 import React from 'react';
-import { View, Text, StyleSheet, Image } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, Alert } from 'react-native';
 
-const PerfilScreen = () => {
+const PerfilScreen = ({ onLogout }) => {
   // Exemplo de dados do usuário
   const usuario = {
-    matricula: '123456',
-    nome: 'João da Silva',
-    email: 'joao.silva@email.com',
-    foto: 'https://via.placeholder.com/150', // Substitua pela URL da foto do aluno
+    matricula: '40404040',
+    nome: 'João Campos',
+    email: 'joao.@email.com',
+    foto: 'https://media.discordapp.net/attachments/1219800390887804995/1296627078233460798/Joao-Campos-e1707765953255.png?ex=6712f991&is=6711a811&hm=d5bec49215213af2f8e7fb57e4d04067adba7aeac9f4b22ea461365057c36a61&=&format=webp&quality=lossless&width=1232&height=670',
+  };
+
+  const handleLogout = () => {
+    // Aqui você pode implementar a lógica de logout (por exemplo, limpar o estado de autenticação)
+    Alert.alert("Logout", "Você foi deslogado com sucesso!", [{ text: "OK", onPress: onLogout }]);
   };
 
   return (
@@ -27,6 +32,11 @@ const PerfilScreen = () => {
         <Text style={styles.label}>Email:</Text>
         <Text style={styles.text}>{usuario.email}</Text>
       </View>
+
+      {/* Botão de Logout */}
+      <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+        <Text style={styles.buttonText}>Deslogar</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -36,17 +46,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center', // Centraliza os itens horizontalmente
+    alignItems: 'center',
     padding: 20,
     backgroundColor: '#f9f9f9',
   },
   foto: {
     width: 150,
     height: 150,
-    borderRadius: 75, // Torna a imagem redonda
+    borderRadius: 75,
     marginBottom: 20,
     borderWidth: 2,
-    borderColor: '#ddd', // Adiciona uma borda suave
+    borderColor: '#ddd',
   },
   header: {
     fontSize: 24,
@@ -72,6 +82,18 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 18,
     color: '#777',
+  },
+  logoutButton: {
+    backgroundColor: 'purple',
+    borderRadius: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    marginTop: 20,
+  },
+  buttonText: {
+    textAlign: 'center',
+    color: '#fff',
+    fontWeight: 'bold',
   },
 });
 

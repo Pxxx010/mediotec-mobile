@@ -1,14 +1,21 @@
 // screens/LoginScreen.js
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from 'react-native';
-import { Ionicons } from '@expo/vector-icons'; // Importe os ícones do Ionicons
+import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Modal } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 const LoginScreen = ({ onLogin }) => {
   const [matricula, setMatricula] = useState('');
   const [senha, setSenha] = useState('');
+  const [modalVisible, setModalVisible] = useState(false);
 
   const handleLogin = () => {
-    onLogin(matricula, senha); // Chama a função de login passada como prop
+    // Verifica se a matrícula e a senha estão corretas
+    if (matricula === '1' && senha === '1') {
+      onLogin(matricula, senha);
+    } else {
+      // Se as credenciais estiverem incorretas, exibe o modal
+      setModalVisible(true);
+    }
   };
 
   return (
@@ -37,6 +44,26 @@ const LoginScreen = ({ onLogin }) => {
       <TouchableOpacity style={styles.button} onPress={handleLogin}>
         <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
+
+      {/* Modal para exibir mensagem de erro */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>Matrícula ou senha incorretas!</Text>
+            <TouchableOpacity
+              style={styles.modalButton}
+              onPress={() => setModalVisible(false)}
+            >
+              <Text style={styles.buttonText}>Fechar</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -46,7 +73,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     padding: 20,
-    backgroundColor: '#f7f7f7', // Adicione um fundo suave
+    backgroundColor: '#f7f7f7',
   },
   title: {
     fontSize: 24,
@@ -60,10 +87,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: 1,
     borderColor: 'gray',
-    borderRadius: 20, // Cantos arredondados
+    borderRadius: 20,
     marginBottom: 15,
     paddingHorizontal: 10,
-    backgroundColor: '#fff', // Fundo branco para os inputs
+    backgroundColor: '#fff',
   },
   input: {
     flex: 1,
@@ -84,6 +111,29 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#fff',
     fontWeight: 'bold',
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Fundo semi-transparente
+  },
+  modalView: {
+    width: 300,
+    padding: 20,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+  modalButton: {
+    backgroundColor: 'purple',
+    borderRadius: 10,
+    paddingVertical: 10,
+    width: '100%',
   },
 });
 
