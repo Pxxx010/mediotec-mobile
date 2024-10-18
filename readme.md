@@ -1,4 +1,3 @@
-
 # Sistema Escolar Mobile
 
 Este projeto é um aplicativo mobile desenvolvido com React Native, destinado a facilitar o acesso de alunos a informações acadêmicas, comunicados e contatos da escola.
@@ -10,6 +9,7 @@ Este projeto é um aplicativo mobile desenvolvido com React Native, destinado a 
 - **Tela de Comunicados**: Recebimento de comunicados da escola, com a possibilidade de visualizar detalhes ao clicar em cada item.
 - **Tela de Contatos**: Acesso rápido aos contatos da escola, com links para telefone e WhatsApp.
 - **Tela Financeira**: Direcionamento para o sistema financeiro da escola.
+- **Tela de Perfil**: Exibição e edição das informações do perfil do aluno, como nome, e-mail e foto.
 
 ## Tecnologias Utilizadas
 
@@ -47,7 +47,8 @@ sistema-escolar-mobile
 │   ├── ConceitosScreen.js  # Tela de Conceitos
 │   ├── ComunicacoesScreen.js # Tela de Comunicados
 │   ├── ContatosScreen.js    # Tela de Contatos
-│   └── FinanceiroScreen.js  # Tela Financeira
+│   ├── FinanceiroScreen.js  # Tela Financeira
+│   └── PerfilScreen.js      # Tela de Perfil
 └── assets                  # Diretório para armazenar imagens e outros assets
 ```
 
