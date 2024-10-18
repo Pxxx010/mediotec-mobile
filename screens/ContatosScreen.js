@@ -1,6 +1,5 @@
-// screens/ContatosScreen.js
 import React from 'react';
-import { View, Text, FlatList, Linking, StyleSheet } from 'react-native';
+import { View, Text, FlatList, Linking, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'; // Importando Ionicons
 
 const contatosFake = [
@@ -35,6 +34,14 @@ const ContatosScreen = () => {
         renderItem={renderItem}
         keyExtractor={item => item.id}
       />
+      {/* Card adicional para o setor financeiro */}
+      <TouchableOpacity style={styles.item} onPress={() => Linking.openURL('https://sitefinanceiro.com')}>
+        <View style={styles.financeCard}>
+          <Ionicons name="cash-outline" size={24} color='purple' />
+          <Text style={styles.financeText}>Setor Financeiro</Text>
+        </View>
+        <Text style={styles.financeLink}>Acessar o portal financeiro</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -44,20 +51,20 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 20,
     paddingHorizontal: 10,
-    backgroundColor: '#f2f2f2', // Fundo claro para contraste
+    backgroundColor: '#f2f2f2',
   },
   header: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
     marginTop: 30,
-    textAlign: 'center'
+    textAlign: 'center',
   },
   item: {
     padding: 15,
     marginVertical: 8,
     borderRadius: 8,
-    backgroundColor: '#fff', // Cor de fundo dos cards
+    backgroundColor: '#fff',
     shadowColor: '#000',
     shadowOpacity: 0.1,
     shadowRadius: 5,
@@ -66,7 +73,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: 'purple', // Cor do nome
+    color: 'purple',
   },
   contactInfo: {
     flexDirection: 'row',
@@ -74,9 +81,26 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   link: {
-    color: 'purple', // Cor dos links
+    color: 'black',
     marginLeft: 10,
     textDecorationLine: 'underline',
+  },
+  // Estilos para o card financeiro
+  financeCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 5,
+  },
+  financeText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: 'purple',
+    marginLeft: 10,
+  },
+  financeLink: {
+    color: 'black',
+    textDecorationLine: 'underline',
+    marginTop: 5,
   },
 });
 
