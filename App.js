@@ -61,17 +61,17 @@ export default function App() {
             tabBarInactiveTintColor: 'gray',
           })}
         >
-          <Tab.Screen name="Turmas" component={TurmasScreen} />
-          <Tab.Screen name="Conceitos" component={ConceitosScreen} />
-          <Tab.Screen name="Comunicados" component={ComunicacoesScreen} />
-          <Tab.Screen name="Contatos" component={ContatosScreen} />
+          <Tab.Screen name="Turmas" component={TurmasScreen} options={{ title: 'Turma', headerShown: false}} />
+          <Tab.Screen name="Conceitos" component={ConceitosScreen} options={{ title: 'Conceitos', headerShown: false}}  />
+          <Tab.Screen name="Comunicados" component={ComunicacoesScreen} options={{ title: 'Comunicados', headerShown: false}}/>
+          <Tab.Screen name="Contatos" component={ContatosScreen} options={{ title: 'Contatos', headerShown: false}} />
           <Tab.Screen name="Perfil">
             {() => <PerfilScreen onLogout={() => setIsLoggedIn(false)} />}
           </Tab.Screen>
         </Tab.Navigator>
       ) : (
         <Stack.Navigator>
-          <Stack.Screen name="Login">
+          <Stack.Screen name="Login" options={{ title: 'Login', headerShown: false}}>
             {() => <LoginScreen onLogin={handleLogin} />}
           </Stack.Screen>
         </Stack.Navigator>

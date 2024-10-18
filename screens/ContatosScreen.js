@@ -50,6 +50,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
+    marginTop: 30,
     textAlign: 'center'
   },
   item: {
