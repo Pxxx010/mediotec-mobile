@@ -6,7 +6,7 @@ import TurmasScreen from './screens/TurmaScreen';
 import ConceitosScreen from './screens/ConceitosScreen';
 import ComunicacoesScreen from './screens/ComunicacoesScreen';
 import ContatosScreen from './screens/ContatosScreen';
-import FinanceiroScreen from './screens/FinanceiroScreen';
+import PerfilScreen from './screens/PerfilScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -17,23 +17,29 @@ export default function App() {
         screenOptions={({ route }) => ({
           tabBarIcon: ({ focused, color, size }) => {
             let iconName;
-
-            if (route.name === 'Turmas') {
-              iconName = focused ? 'school' : 'school-outline';
-            } else if (route.name === 'Conceitos') {
-              iconName = focused ? 'book' : 'book-outline';
-            } else if (route.name === 'Comunicados') {
-              iconName = focused ? 'notifications' : 'notifications-outline';
-            } else if (route.name === 'Contatos') {
-              iconName = focused ? 'call' : 'call-outline';
-            } else if (route.name === 'Financeiro') {
-              iconName = focused ? 'wallet' : 'wallet-outline';
+            switch (route.name) {
+              case 'Turmas':
+                iconName = focused ? 'school' : 'school-outline';
+                break;
+              case 'Conceitos':
+                iconName = focused ? 'book' : 'book-outline';
+                break;
+              case 'Comunicados':
+                iconName = focused ? 'notifications' : 'notifications-outline';
+                break;
+              case 'Contatos':
+                iconName = focused ? 'call' : 'call-outline';
+                break;
+              case 'Perfil':
+                iconName = focused ? 'person' : 'person-outline';
+                break;
+              default:
+                iconName = 'help-circle-outline';
+                break;
             }
-
-            // Retorna o ícone correto
             return <Ionicons name={iconName} size={size} color={color} />;
           },
-          tabBarActiveTintColor: 'tomato',
+          tabBarActiveTintColor: 'purple',
           tabBarInactiveTintColor: 'gray',
         })}
       >
@@ -41,7 +47,7 @@ export default function App() {
         <Tab.Screen name="Conceitos" component={ConceitosScreen} />
         <Tab.Screen name="Comunicados" component={ComunicacoesScreen} />
         <Tab.Screen name="Contatos" component={ContatosScreen} />
-        <Tab.Screen name="Financeiro" component={FinanceiroScreen} />
+        <Tab.Screen name="Perfil" component={PerfilScreen} />
       </Tab.Navigator>
     </NavigationContainer>
   );

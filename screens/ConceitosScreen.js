@@ -3,10 +3,10 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, StyleSheet } from 'react-native';
 
 const conceitosFake = [
-  { id: '1', disciplina: 'Matemática', conceito: 'A' },
-  { id: '2', disciplina: 'Português', conceito: 'B+' },
-  { id: '3', disciplina: 'História', conceito: 'A-' },
-  { id: '4', disciplina: 'Geografia', conceito: 'B-' }
+  { id: '1', disciplina: 'Matemática', unidade1: 'A', unidade2: 'B+', notaFinal: 'B' },
+  { id: '2', disciplina: 'Português', unidade1: 'B+', unidade2: 'A-', notaFinal: 'B+' },
+  { id: '3', disciplina: 'História', unidade1: 'A-', unidade2: 'A', notaFinal: 'A' },
+  { id: '4', disciplina: 'Geografia', unidade1: 'B-', unidade2: 'B', notaFinal: 'B-' },
 ];
 
 const ConceitosScreen = () => {
@@ -18,15 +18,19 @@ const ConceitosScreen = () => {
   }, []);
 
   const renderItem = ({ item }) => (
-    <View style={styles.item}>
+    <View style={styles.card}>
       <Text style={styles.title}>{item.disciplina}</Text>
-      <Text>{`Conceito: ${item.conceito}`}</Text>
+      <View style={styles.gradesContainer}>
+        <Text style={styles.gradeText}>{`Unidade 1: ${item.unidade1}`}</Text>
+        <Text style={styles.gradeText}>{`Unidade 2: ${item.unidade2}`}</Text>
+        <Text style={styles.finalGradeText}>{`Nota Final: ${item.notaFinal}`}</Text>
+      </View>
     </View>
   );
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Conceitos</Text>
+      <Text style={styles.header}>Conceitos de Turma</Text>
       <FlatList
         data={conceitos}
         renderItem={renderItem}
@@ -41,20 +45,41 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 20,
     paddingHorizontal: 10,
+    backgroundColor: '#f2f2f2', // Fundo claro
   },
   header: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
+    textAlign: 'center'
   },
-  item: {
-    padding: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+  card: {
+    padding: 15,
+    marginVertical: 10,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowRadius: 10,
+    elevation: 3,
   },
   title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: 'purple', // Cor do título
+  },
+  gradesContainer: {
+    marginTop: 10,
+  },
+  gradeText: {
+    fontSize: 16,
+    marginVertical: 2,
+    color: '#333', // Cor do texto
+  },
+  finalGradeText: {
     fontSize: 18,
     fontWeight: 'bold',
+    color: 'green', // Cor para a nota final
   },
 });
 
