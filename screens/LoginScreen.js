@@ -1,19 +1,34 @@
-// screens/LoginScreen.js
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Modal } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import axios from 'axios'; // Importando axios
 
 const LoginScreen = ({ onLogin }) => {
   const [matricula, setMatricula] = useState('');
   const [senha, setSenha] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
+  const [welcomeModalVisible, setWelcomeModalVisible] = useState(false); // Estado para modal de boas-vindas
+  const [errorMessage, setErrorMessage] = useState('');
 
-  const handleLogin = () => {
-    // Verifica se a matrícula e a senha estão corretas
-    if (matricula === '1' && senha === '1') {
-      onLogin(matricula, senha);
-    } else {
-      // Se as credenciais estiverem incorretas, exibe o modal
+  const handleLogin = async () => {
+    try {
+      const response = await axios.post('https://backend-medio-tech-senac.onrender.com/auth/sign-in', {
+        email: matricula, // Usando email como matrícula
+        password: senha,
+      });
+
+      // Se a requisição for bem-sucedida
+      const data = response.data;
+      console.log(data); // Verifique os dados retornados
+      onLogin(data.user.name, data.accessToken); // Chama o callback com o nome e token
+      setWelcomeModalVisible(true); // Abre o modal de boas-vindas
+    } catch (error) {
+      // Se a requisição falhar
+      if (error.response) {
+        setErrorMessage(error.response.data.message || 'Matrícula ou senha incorretas!');
+      } else {
+        setErrorMessage('Ocorreu um erro. Tente novamente.');
+      }
       setModalVisible(true);
     }
   };
@@ -28,7 +43,7 @@ const LoginScreen = ({ onLogin }) => {
           placeholder="Matrícula"
           value={matricula}
           onChangeText={setMatricula}
-          keyboardType="numeric"
+          keyboardType="email-address" // Usando email como matrícula
         />
       </View>
       <View style={styles.inputContainer}>
@@ -54,10 +69,36 @@ const LoginScreen = ({ onLogin }) => {
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalView}>
-            <Text style={styles.modalText}>Matrícula ou senha incorretas!</Text>
+            <Text style={styles.modalText}>{errorMessage}</Text>
             <TouchableOpacity
               style={styles.modalButton}
               onPress={() => setModalVisible(false)}
+            >
+              <Text style={styles.buttonText}>Fechar</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Modal de boas-vindas */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={welcomeModalVisible}
+        onRequestClose={() => {
+          setWelcomeModalVisible(false);
+          setMatricula(''); // Limpa a matrícula após o modal ser fechado
+        }}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>Bem-vindo, {matricula}!</Text>
+            <TouchableOpacity
+              style={styles.modalButton}
+              onPress={() => {
+                setWelcomeModalVisible(false);
+                setMatricula(''); // Limpa a matrícula após o modal ser fechado
+              }}
             >
               <Text style={styles.buttonText}>Fechar</Text>
             </TouchableOpacity>

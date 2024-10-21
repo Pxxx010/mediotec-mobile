@@ -1,3 +1,4 @@
+// App.js
 import React, { useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -18,14 +19,14 @@ export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
 
-  const handleLogin = (matricula, senha) => {
-    // Simulação de login
-    if (matricula === '1' && senha === '1') {
-      setIsLoggedIn(true);
-      setModalVisible(false); // Fecha o modal se o login for bem-sucedido
-    } else {
-      setModalVisible(true); // Abre o modal se as credenciais estiverem erradas
-    }
+  const handleLogin = (name, accessToken) => {
+    // Armazene o token de acesso se necessário
+    console.log('Usuário logado:', name);
+    console.log('Token de acesso:', accessToken);
+    
+    // Aqui, você pode definir o estado de loggedIn para true
+    setIsLoggedIn(true);
+    setModalVisible(false); // Fecha o modal se o login for bem-sucedido
   };
 
   return (
@@ -61,17 +62,17 @@ export default function App() {
             tabBarInactiveTintColor: 'gray',
           })}
         >
-          <Tab.Screen name="Turmas" component={TurmasScreen} options={{ title: 'Turma', headerShown: false}} />
-          <Tab.Screen name="Conceitos" component={ConceitosScreen} options={{ title: 'Conceitos', headerShown: false}}  />
-          <Tab.Screen name="Comunicados" component={ComunicacoesScreen} options={{ title: 'Comunicados', headerShown: false}}/>
-          <Tab.Screen name="Contatos" component={ContatosScreen} options={{ title: 'Contatos', headerShown: false}} />
+          <Tab.Screen name="Turmas" component={TurmasScreen} options={{ title: 'Turma', headerShown: false }} />
+          <Tab.Screen name="Conceitos" component={ConceitosScreen} options={{ title: 'Conceitos', headerShown: false }} />
+          <Tab.Screen name="Comunicados" component={ComunicacoesScreen} options={{ title: 'Comunicados', headerShown: false }} />
+          <Tab.Screen name="Contatos" component={ContatosScreen} options={{ title: 'Contatos', headerShown: false }} />
           <Tab.Screen name="Perfil">
             {() => <PerfilScreen onLogout={() => setIsLoggedIn(false)} />}
           </Tab.Screen>
         </Tab.Navigator>
       ) : (
         <Stack.Navigator>
-          <Stack.Screen name="Login" options={{ title: 'Login', headerShown: false}}>
+          <Stack.Screen name="Login" options={{ title: 'Login', headerShown: false }}>
             {() => <LoginScreen onLogin={handleLogin} />}
           </Stack.Screen>
         </Stack.Navigator>
@@ -101,7 +102,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)', // Fundo semi-transparente
   },
   modalText: {
-    marginBottom: 20,
+    marginBottom: 15,
     textAlign: 'center',
     color: 'white',
     fontSize: 18,
