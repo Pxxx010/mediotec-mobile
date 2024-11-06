@@ -1,15 +1,29 @@
-// screens/PerfilScreen.js
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, Alert } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const PerfilScreen = ({ onLogout }) => {
-  // Exemplo de dados do usuário
-  const usuario = {
-    matricula: '40404040',
-    nome: 'João Campos',
-    email: 'joao.@email.com',
-    foto: 'https://media.discordapp.net/attachments/1219800390887804995/1296627078233460798/Joao-Campos-e1707765953255.png?ex=6712f991&is=6711a811&hm=d5bec49215213af2f8e7fb57e4d04067adba7aeac9f4b22ea461365057c36a61&=&format=webp&quality=lossless&width=1232&height=670',
-  };
+  const [userName, setUserName] = useState('');
+  const [userEmail, setUserEmail] = useState('');
+  const [userToken, setUserToken] = useState('');
+
+  useEffect(() => {
+    const getUserData = async () => {
+      try {
+        const name = await AsyncStorage.getItem('@user_name');
+        const email = await AsyncStorage.getItem('@user_email');
+        const token = await AsyncStorage.getItem('@access_token');
+
+        if (name) setUserName(name);
+        if (email) setUserEmail(email);
+        if (token) setUserToken(token);
+      } catch (e) {
+        console.error('Erro ao obter os dados de autenticação', e);
+      }
+    };
+
+    getUserData();
+  }, []);
 
   const handleLogout = () => {
     // Aqui você pode implementar a lógica de logout (por exemplo, limpar o estado de autenticação)
@@ -18,22 +32,19 @@ const PerfilScreen = ({ onLogout }) => {
 
   return (
     <View style={styles.container}>
-      <Image source={{ uri: usuario.foto }} style={styles.foto} />
+      <Image
+        source={{ uri: 'https://media.discordapp.net/attachments/1219800390887804995/1303697990564843601/pngwing.com-removebg-preview.png?ex=672cb2de&is=672b615e&hm=6b7b66b62fb00b90b99c439c8d79626c8bbfe8aa1703b178cf98b62d1462b2ed&=&format=webp&quality=lossless'}}
+        style={styles.foto}
+      />
       <Text style={styles.header}>Perfil do Usuário</Text>
       <View style={styles.infoContainer}>
-        <Text style={styles.label}>Matrícula:</Text>
-        <Text style={styles.text}>{usuario.matricula}</Text>
-      </View>
-      <View style={styles.infoContainer}>
         <Text style={styles.label}>Nome:</Text>
-        <Text style={styles.text}>{usuario.nome}</Text>
+        <Text style={styles.text}>{userName}</Text>
       </View>
       <View style={styles.infoContainer}>
         <Text style={styles.label}>Email:</Text>
-        <Text style={styles.text}>{usuario.email}</Text>
+        <Text style={styles.text}>{userEmail}</Text>
       </View>
-
-      {/* Botão de Logout */}
       <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
         <Text style={styles.buttonText}>Deslogar</Text>
       </TouchableOpacity>

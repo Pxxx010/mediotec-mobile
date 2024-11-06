@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity, Modal, Button } from 'react-native';
 
+
+const img = 'https://media.discordapp.net/attachments/1219800390887804995/1296603964585934889/bell-icons-16616.png?ex=672c994a&is=672b47ca&hm=0078f3d26859cb386eb3e7538769f2ab228ff15066014c3078e2c09f057dfc2a&=&format=webp&quality=lossless&width=676&height=676';
+
 const comunicadosFake = [
-  { id: '1', titulo: 'Reunião de Pais', descricao: 'Haverá uma reunião de pais na próxima sexta-feira.', imagem: 'https://media.discordapp.net/attachments/1219800390887804995/1296603964585934889/bell-icons-16616.png?ex=6712e40a&is=6711928a&hm=35de563fbe0d9abfb723623b1357c0b2e786f1e0eeee6cfa23cb1285e165c231&=&format=webp&quality=lossless&width=437&height=437' },
-  { id: '2', titulo: 'Feira de Ciências', descricao: 'Participe da feira de ciências da escola.', imagem: 'https://media.discordapp.net/attachments/1219800390887804995/1296603964585934889/bell-icons-16616.png?ex=6712e40a&is=6711928a&hm=35de563fbe0d9abfb723623b1357c0b2e786f1e0eeee6cfa23cb1285e165c231&=&format=webp&quality=lossless&width=437&height=437' },
-  { id: '3', titulo: 'Aula Cancelada', descricao: 'A aula de matemática foi cancelada.', imagem: 'https://media.discordapp.net/attachments/1219800390887804995/1296603964585934889/bell-icons-16616.png?ex=6712e40a&is=6711928a&hm=35de563fbe0d9abfb723623b1357c0b2e786f1e0eeee6cfa23cb1285e165c231&=&format=webp&quality=lossless&width=437&height=437' },
+  { id: '1', titulo: 'Reunião de Pais', descricao: 'Haverá uma reunião de pais na próxima sexta-feira.', imagem: img },
+  { id: '2', titulo: 'Feira de Ciências', descricao: 'Participe da feira de ciências da escola.', imagem: img },
+  { id: '3', titulo: 'Aula Cancelada', descricao: 'A aula de matemática foi cancelada.', imagem: img },
 ];
 
 const ComunicadosScreen = () => {

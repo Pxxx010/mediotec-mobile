@@ -1,29 +1,39 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Modal } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Modal } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import axios from 'axios'; // Importando axios
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LoginScreen = ({ onLogin }) => {
   const [matricula, setMatricula] = useState('');
   const [senha, setSenha] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
-  const [welcomeModalVisible, setWelcomeModalVisible] = useState(false); // Estado para modal de boas-vindas
+  const [welcomeModalVisible, setWelcomeModalVisible] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+
+  const storeUserData = async (name, email, token) => {
+    try {
+      await AsyncStorage.setItem('@user_name', name);
+      await AsyncStorage.setItem('@user_email', email);
+      await AsyncStorage.setItem('@access_token', token);
+    } catch (e) {
+      console.error('Erro ao salvar os dados de autenticação', e);
+    }
+  };  
 
   const handleLogin = async () => {
     try {
       const response = await axios.post('https://backend-medio-tech-senac.onrender.com/auth/sign-in', {
-        email: matricula, // Usando email como matrícula
+        email: matricula,
         password: senha,
       });
 
-      // Se a requisição for bem-sucedida
       const data = response.data;
-      console.log(data); // Verifique os dados retornados
-      onLogin(data.user.name, data.accessToken); // Chama o callback com o nome e token
+      await storeUserData(data.user.name, data.user.email, data.accessToken); // Salva nome, email e token no AsyncStorage
+      onLogin(data.user.name, data.accessToken); // Chama o callback com nome e token
       setWelcomeModalVisible(true); // Abre o modal de boas-vindas
+      await getUserData();
     } catch (error) {
-      // Se a requisição falhar
       if (error.response) {
         setErrorMessage(error.response.data.message || 'Matrícula ou senha incorretas!');
       } else {
@@ -43,7 +53,7 @@ const LoginScreen = ({ onLogin }) => {
           placeholder="Matrícula"
           value={matricula}
           onChangeText={setMatricula}
-          keyboardType="email-address" // Usando email como matrícula
+          keyboardType="email-address"
         />
       </View>
       <View style={styles.inputContainer}>
@@ -87,7 +97,7 @@ const LoginScreen = ({ onLogin }) => {
         visible={welcomeModalVisible}
         onRequestClose={() => {
           setWelcomeModalVisible(false);
-          setMatricula(''); // Limpa a matrícula após o modal ser fechado
+          setMatricula('');
         }}
       >
         <View style={styles.modalContainer}>
@@ -97,7 +107,7 @@ const LoginScreen = ({ onLogin }) => {
               style={styles.modalButton}
               onPress={() => {
                 setWelcomeModalVisible(false);
-                setMatricula(''); // Limpa a matrícula após o modal ser fechado
+                setMatricula('');
               }}
             >
               <Text style={styles.buttonText}>Fechar</Text>
@@ -157,7 +167,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Fundo semi-transparente
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalView: {
     width: 300,
