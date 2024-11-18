@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity, Modal, Button } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import LottieView from 'lottie-react-native'; // Importando o Lottie
 
 const ComunicadosScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -49,7 +50,12 @@ const ComunicadosScreen = () => {
     <View style={styles.container}>
       <Text style={styles.header}>Comunicados</Text>
       {loading ? (
-        <Text>Carregando...</Text>
+        <LottieView
+          source={require('../assets/loader.json')} // Loader
+          autoPlay
+          loop
+          style={styles.loader} // Loader Styles
+        />
       ) : (
         <FlatList
           data={comunicados}
@@ -156,6 +162,17 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginBottom: 20,
     color: '#666',
+  },
+  loader: {
+    width: 250, // Tamanho maior
+    height: 250, // Tamanho maior
+    alignSelf: 'center', // Centraliza horizontalmente
+    justifyContent: 'center', // Garante que ele esteja no centro verticalmente
+    position: 'absolute', // Garante que ele esteja sobre o conteúdo
+    top: '50%', // Centraliza verticalmente
+    left: '50%', // Centraliza horizontalmente
+    marginTop: -125, // Ajuste de posicionamento para o centro exato
+    marginLeft: -125, // Ajuste de posicionamento para o centro exato
   },
 });
 
