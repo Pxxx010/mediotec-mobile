@@ -33,7 +33,7 @@ const PerfilScreen = ({ onLogout }) => {
   return (
     <View style={styles.container}>
       <Image
-        source={{ uri: 'https://media.discordapp.net/attachments/1219800390887804995/1303697990564843601/pngwing.com-removebg-preview.png?ex=672cb2de&is=672b615e&hm=6b7b66b62fb00b90b99c439c8d79626c8bbfe8aa1703b178cf98b62d1462b2ed&=&format=webp&quality=lossless'}}
+        source={require('../img/avatar.png')}
         style={styles.foto}
       />
       <Text style={styles.header}>Perfil do Usuário</Text>
