@@ -74,7 +74,7 @@ const ComunicadosScreen = () => {
         >
           <View style={styles.modalContainer}>
             <View style={styles.modalContent}>
-              <Image source={{ uri: comunicadoSelecionado.image || 'https://your-default-image-url' }} style={styles.modalImage} />
+              <Image source={require('../img/not.png')} style={styles.modalImage} />
               <Text style={styles.modalTitulo}>{comunicadoSelecionado.title}</Text>
               <Text style={styles.modalDescricao}>{comunicadoSelecionado.content}</Text>
               <Button title="Fechar" onPress={() => setModalVisible(false)} />

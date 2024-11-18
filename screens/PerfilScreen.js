@@ -26,7 +26,6 @@ const PerfilScreen = ({ onLogout }) => {
   }, []);
 
   const handleLogout = () => {
-    // Aqui você pode implementar a lógica de logout (por exemplo, limpar o estado de autenticação)
     Alert.alert("Logout", "Você foi deslogado com sucesso!", [{ text: "OK", onPress: onLogout }]);
   };
 
