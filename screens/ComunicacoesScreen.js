@@ -1,18 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity, Modal, Button } from 'react-native';
-
-
-const img = 'https://media.discordapp.net/attachments/1219800390887804995/1296603964585934889/bell-icons-16616.png?ex=672c994a&is=672b47ca&hm=0078f3d26859cb386eb3e7538769f2ab228ff15066014c3078e2c09f057dfc2a&=&format=webp&quality=lossless&width=676&height=676';
-
-const comunicadosFake = [
-  { id: '1', titulo: 'Reunião de Pais', descricao: 'Haverá uma reunião de pais na próxima sexta-feira.', imagem: img },
-  { id: '2', titulo: 'Feira de Ciências', descricao: 'Participe da feira de ciências da escola.', imagem: img },
-  { id: '3', titulo: 'Aula Cancelada', descricao: 'A aula de matemática foi cancelada.', imagem: img },
-];
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ComunicadosScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [comunicadoSelecionado, setComunicadoSelecionado] = useState(null);
+  const [comunicados, setComunicados] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchAnnouncements = async () => {
+    try {
+      const token = await AsyncStorage.getItem('@access_token');
+      const response = await fetch('https://backend-medio-tech-senac.onrender.com/announcements/read', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+      const data = await response.json();
+      setComunicados(data.data);
+    } catch (error) {
+      console.error("Erro ao buscar comunicados:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchAnnouncements();
+  }, []);
 
   const renderItem = ({ item }) => (
     <TouchableOpacity
@@ -22,10 +37,10 @@ const ComunicadosScreen = () => {
         setModalVisible(true);
       }}
     >
-      <Image source={{ uri: item.imagem }} style={styles.image} />
+      <Image source={require('../img/not.png')} style={styles.image}/>
       <View style={styles.cardContent}>
-        <Text style={styles.titulo}>{item.titulo}</Text>
-        <Text style={styles.descricao}>{item.descricao}</Text>
+        <Text style={styles.titulo}>{item.title}</Text>
+        <Text style={styles.descricao}>{item.content}</Text>
       </View>
     </TouchableOpacity>
   );
@@ -33,11 +48,15 @@ const ComunicadosScreen = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Comunicados</Text>
-      <FlatList
-        data={comunicadosFake}
-        renderItem={renderItem}
-        keyExtractor={item => item.id}
-      />
+      {loading ? (
+        <Text>Carregando...</Text>
+      ) : (
+        <FlatList
+          data={comunicados}
+          renderItem={renderItem}
+          keyExtractor={item => item.id.toString()}
+        />
+      )}
 
       {/* Modal para exibir o comunicado completo */}
       {comunicadoSelecionado && (
@@ -45,15 +64,13 @@ const ComunicadosScreen = () => {
           animationType="fade"
           transparent={true}
           visible={modalVisible}
-          onRequestClose={() => {
-            setModalVisible(!modalVisible);
-          }}
+          onRequestClose={() => setModalVisible(!modalVisible)}
         >
           <View style={styles.modalContainer}>
             <View style={styles.modalContent}>
-              <Image source={{ uri: comunicadoSelecionado.imagem }} style={styles.modalImage} />
-              <Text style={styles.modalTitulo}>{comunicadoSelecionado.titulo}</Text>
-              <Text style={styles.modalDescricao}>{comunicadoSelecionado.descricao}</Text>
+              <Image source={{ uri: comunicadoSelecionado.image || 'https://your-default-image-url' }} style={styles.modalImage} />
+              <Text style={styles.modalTitulo}>{comunicadoSelecionado.title}</Text>
+              <Text style={styles.modalDescricao}>{comunicadoSelecionado.content}</Text>
               <Button title="Fechar" onPress={() => setModalVisible(false)} />
             </View>
           </View>
