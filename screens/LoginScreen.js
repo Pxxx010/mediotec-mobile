@@ -30,7 +30,7 @@ const LoginScreen = ({ onLogin }) => {
 
       const data = response.data;
       await storeUserData(data.user.name, data.user.email, data.accessToken); // Salva nome, email e token no AsyncStorage
-      onLogin(data.user.name, data.accessToken); // Chama o callback com nome e token
+      onLogin(data.user.name, data.user.email); // Chama o callback com nome e token
       setWelcomeModalVisible(true); // Abre o modal de boas-vindas
       await getUserData();
     } catch (error) {

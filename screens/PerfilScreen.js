@@ -25,10 +25,29 @@ const PerfilScreen = ({ onLogout }) => {
     getUserData();
   }, []);
 
-  const handleLogout = () => {
-    Alert.alert("Logout", "Você foi deslogado com sucesso!", [{ text: "OK", onPress: onLogout }]);
-  };
+  const handleLogout = async () => {
+    try {
+      const name = await AsyncStorage.getItem('@user_name');
+      const email = await AsyncStorage.getItem('@user_email');
+  
+      // Log de Logout
+      console.log('-------------------')
+      console.log(`Usuário deslogado:`);
+      console.log(`Nome: ${name}`);
+      console.log(`Email: ${email}`);
+      console.log('-------------------')
 
+  
+      // Remove todos os dados do usuario logado
+      await AsyncStorage.multiRemove(['@user_name', '@user_email', '@access_token']);
+  
+      // Mensagem de logout
+      Alert.alert("Logout", "Você foi deslogado com sucesso!", [{ text: "OK", onPress: onLogout }]);
+    } catch (e) {
+      console.error('Erro ao limpar os dados de autenticação', e);
+      Alert.alert("Erro", "Não foi possível realizar o logout. Tente novamente.");
+    }
+  };
   return (
     <View style={styles.container}>
       <Image

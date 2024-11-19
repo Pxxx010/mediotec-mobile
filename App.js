@@ -1,4 +1,3 @@
-// App.js
 import React, { useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -39,9 +38,12 @@ export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
 
-  const handleLogin = (name, accessToken) => {
+  const handleLogin = (name, email) => {
+    console.log('-------------------')
+    console.log(`Usuário logado:`);
     console.log('Usuário logado:', name);
-    console.log('Token de acesso:', accessToken);
+    console.log('Email:', email);
+    console.log('-------------------')
     setIsLoggedIn(true);
     setModalVisible(false);
   };
