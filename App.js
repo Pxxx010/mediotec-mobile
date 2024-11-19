@@ -41,7 +41,7 @@ export default function App() {
   const handleLogin = (name, email) => {
     console.log('-------------------')
     console.log(`Usuário logado:`);
-    console.log('Usuário logado:', name);
+    console.log('Usuário:', name);
     console.log('Email:', email);
     console.log('-------------------')
     setIsLoggedIn(true);

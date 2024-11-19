@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const PerfilScreen = ({ onLogout }) => {
   const [userName, setUserName] = useState('');
+  const [userRole, setUserRole] = useState('Estudante');
   const [userEmail, setUserEmail] = useState('');
   const [userToken, setUserToken] = useState('');
 
@@ -13,10 +14,12 @@ const PerfilScreen = ({ onLogout }) => {
         const name = await AsyncStorage.getItem('@user_name');
         const email = await AsyncStorage.getItem('@user_email');
         const token = await AsyncStorage.getItem('@access_token');
+        const cargo = await AsyncStorage.getItem('@user_role');
 
         if (name) setUserName(name);
         if (email) setUserEmail(email);
         if (token) setUserToken(token);
+        if (cargo) setUserRole(cargo);
       } catch (e) {
         console.error('Erro ao obter os dados de autenticação', e);
       }
@@ -33,7 +36,7 @@ const PerfilScreen = ({ onLogout }) => {
       // Log de Logout
       console.log('-------------------')
       console.log(`Usuário deslogado:`);
-      console.log(`Nome: ${name}`);
+      console.log(`Usuário: ${name}`);
       console.log(`Email: ${email}`);
       console.log('-------------------')
 
@@ -58,6 +61,10 @@ const PerfilScreen = ({ onLogout }) => {
       <View style={styles.infoContainer}>
         <Text style={styles.label}>Nome:</Text>
         <Text style={styles.text}>{userName}</Text>
+      </View>
+      <View style={styles.infoContainer}>
+        <Text style={styles.label}>Cargo:</Text>
+        <Text style={styles.text}>{userRole}</Text>
       </View>
       <View style={styles.infoContainer}>
         <Text style={styles.label}>Email:</Text>
