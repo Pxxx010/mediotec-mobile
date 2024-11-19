@@ -15,18 +15,35 @@ import LoginScreen from './screens/LoginScreen';
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
+// Stack Navigator para Turmas e Conceitos
+function TurmasStack() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="TurmasScreen"
+        component={TurmasScreen}
+        options={{ title: 'Turma', headerShown: false }}
+      />
+      <Stack.Screen
+        name="ConceitosScreen"
+        component={ConceitosScreen}
+        options={({ route }) => ({
+          title: `Conceitos de ${route.params?.disciplinaNome || ''}`,
+        })}
+      />
+    </Stack.Navigator>
+  );
+}
+
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
 
   const handleLogin = (name, accessToken) => {
-    // Armazene o token de acesso se necessário
     console.log('Usuário logado:', name);
     console.log('Token de acesso:', accessToken);
-    
-    // Aqui, você pode definir o estado de loggedIn para true
     setIsLoggedIn(true);
-    setModalVisible(false); // Fecha o modal se o login for bem-sucedido
+    setModalVisible(false);
   };
 
   return (
@@ -62,8 +79,7 @@ export default function App() {
             tabBarInactiveTintColor: 'gray',
           })}
         >
-          <Tab.Screen name="Turmas" component={TurmasScreen} options={{ title: 'Turma', headerShown: false }} />
-          <Tab.Screen name="Conceitos" component={ConceitosScreen} options={{ title: 'Conceitos', headerShown: false }} />
+          <Tab.Screen name="Turmas" component={TurmasStack} options={{ headerShown: false }} />
           <Tab.Screen name="Comunicados" component={ComunicacoesScreen} options={{ title: 'Comunicados', headerShown: false }} />
           <Tab.Screen name="Contatos" component={ContatosScreen} options={{ title: 'Contatos', headerShown: false }} />
           <Tab.Screen name="Perfil">
@@ -99,7 +115,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Fundo semi-transparente
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalText: {
     marginBottom: 15,
