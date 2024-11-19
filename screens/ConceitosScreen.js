@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, Modal, Button } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, Modal, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRoute } from '@react-navigation/native';
 
@@ -16,12 +16,12 @@ const conceitosFake = [
   { id: '10', disciplina: 'Artes', turmaId: '2', unidade1: 'A', unidade2: 'A-', notaFinal: 'A-', icone: 'color-palette-outline' },
 ];
 
-
 const ConceitosScreen = () => {
   const route = useRoute();
   const { turmaId } = route.params;
   const [conceitos, setConceitos] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
+  const [horarioModalVisible, setHorarioModalVisible] = useState(false); // Modal para horário
   const [selectedConceito, setSelectedConceito] = useState(null);
 
   useEffect(() => {
@@ -37,6 +37,14 @@ const ConceitosScreen = () => {
   const closeModal = () => {
     setSelectedConceito(null);
     setModalVisible(false);
+  };
+
+  const openHorarioModal = () => {
+    setHorarioModalVisible(true);
+  };
+
+  const closeHorarioModal = () => {
+    setHorarioModalVisible(false);
   };
 
   const renderItem = ({ item }) => (
@@ -87,6 +95,32 @@ const ConceitosScreen = () => {
           </View>
         </View>
       </Modal>
+
+      {/* Modal para exibir o horário */}
+      <Modal
+        visible={horarioModalVisible}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={closeHorarioModal}
+      >
+        <View style={styles.modalBackground}>
+          <View style={styles.horarioContainer}>
+            <Image
+              source={require('../img/horario.png')}
+              style={styles.horarioImage}
+              resizeMode="contain"
+            />
+            <TouchableOpacity style={styles.closeButton} onPress={closeHorarioModal}>
+              <Text style={styles.closeButtonText}>Fechar</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      {/* FAB */}
+      <TouchableOpacity style={styles.fab} onPress={openHorarioModal}>
+        <Ionicons name="time-outline" size={28} color="white" />
+      </TouchableOpacity>
     </View>
   );
 };
@@ -150,22 +184,29 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     elevation: 5,
   },
-  modalTitle: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: 'purple',
-    marginBottom: 10,
+  horarioContainer: {
+    width: '90%',
+    backgroundColor: 'white',
+    borderRadius: 10,
+    padding: 20,
+    alignItems: 'center',
   },
-  modalText: {
-    fontSize: 18,
-    marginVertical: 5,
-    color: '#333',
+  horarioImage: {
+    width: '100%',
+    height: 300,
+    marginBottom: 20,
   },
-  modalFinalGrade: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: 'green',
-    marginVertical: 10,
+  fab: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    backgroundColor: 'purple',
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 5,
   },
   closeButton: {
     marginTop: 20,
