@@ -1,5 +1,13 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Modal } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  TouchableOpacity,
+  Modal,
+  Image,
+} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -19,20 +27,22 @@ const LoginScreen = ({ onLogin }) => {
     } catch (e) {
       console.error('Erro ao salvar os dados de autenticação', e);
     }
-  };  
+  };
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post('https://backend-medio-tech-senac.onrender.com/auth/sign-in', {
-        email: matricula,
-        password: senha,
-      });
+      const response = await axios.post(
+        'https://backend-medio-tech-senac.onrender.com/auth/sign-in',
+        {
+          email: matricula,
+          password: senha,
+        }
+      );
 
       const data = response.data;
-      await storeUserData(data.user.name, data.user.email, data.accessToken); // Salva nome, email e token no AsyncStorage
-      onLogin(data.user.name, data.user.email); // Chama o callback com nome e token
-      setWelcomeModalVisible(true); // Abre o modal de boas-vindas
-      await getUserData();
+      await storeUserData(data.user.name, data.user.email, data.accessToken);
+      onLogin(data.user.name, data.user.email);
+      setWelcomeModalVisible(true);
     } catch (error) {
       if (error.response) {
         setErrorMessage(error.response.data.message || 'Matrícula ou senha incorretas!');
@@ -45,12 +55,19 @@ const LoginScreen = ({ onLogin }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>MedioTec</Text>
+      {/* Logomarca */}
+      <Image
+        source={require('../img/logo.png')} // Substitua pela URL da sua logomarca
+        style={styles.logo}
+        resizeMode="contain"
+      />
+
       <View style={styles.inputContainer}>
         <Ionicons name="person-outline" size={24} style={styles.icon} />
         <TextInput
           style={styles.input}
-          placeholder="Matrícula"
+          placeholder="Digite seu email"
+          placeholderTextColor="#bbb"
           value={matricula}
           onChangeText={setMatricula}
           keyboardType="email-address"
@@ -60,19 +77,20 @@ const LoginScreen = ({ onLogin }) => {
         <Ionicons name="lock-closed-outline" size={24} style={styles.icon} />
         <TextInput
           style={styles.input}
-          placeholder="Senha"
+          placeholder="Digite sua senha"
+          placeholderTextColor="#bbb"
           value={senha}
           onChangeText={setSenha}
           secureTextEntry
         />
       </View>
       <TouchableOpacity style={styles.button} onPress={handleLogin}>
-        <Text style={styles.buttonText}>Login</Text>
+        <Text style={styles.buttonText}>Entrar</Text>
       </TouchableOpacity>
 
       {/* Modal para exibir mensagem de erro */}
       <Modal
-        animationType="slide"
+        animationType="fade"
         transparent={true}
         visible={modalVisible}
         onRequestClose={() => setModalVisible(false)}
@@ -92,7 +110,7 @@ const LoginScreen = ({ onLogin }) => {
 
       {/* Modal de boas-vindas */}
       <Modal
-        animationType="slide"
+        animationType="fade"
         transparent={true}
         visible={welcomeModalVisible}
         onRequestClose={() => {
@@ -126,42 +144,47 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: '#f7f7f7',
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    textAlign: 'center',
-    color: 'purple',
+  logo: {
+    width: '80%',
+    height: 100,
+    alignSelf: 'center',
+    marginBottom: 30,
   },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    backgroundColor: '#fff',
     borderWidth: 1,
-    borderColor: 'gray',
-    borderRadius: 20,
+    borderColor: '#ddd',
+    borderRadius: 10,
     marginBottom: 15,
     paddingHorizontal: 10,
-    backgroundColor: '#fff',
   },
   input: {
     flex: 1,
-    height: 40,
+    height: 45,
     paddingLeft: 10,
+    color: '#333',
   },
   icon: {
-    marginRight: 10,
-    color: 'gray',
+    color: '#004B8D',
   },
   button: {
-    backgroundColor: 'purple',
-    borderRadius: 20,
-    paddingVertical: 10,
-    marginTop: 20,
+    backgroundColor: '#004B8D',
+    borderRadius: 10,
+    paddingVertical: 12,
+    marginTop: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+    elevation: 5,
   },
   buttonText: {
-    textAlign: 'center',
     color: '#fff',
     fontWeight: 'bold',
+    textAlign: 'center',
+    fontSize: 16,
   },
   modalContainer: {
     flex: 1,
@@ -171,17 +194,24 @@ const styles = StyleSheet.create({
   },
   modalView: {
     width: 300,
+    backgroundColor: '#fff',
+    borderRadius: 20,
     padding: 20,
-    backgroundColor: 'white',
-    borderRadius: 10,
     alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
   },
   modalText: {
-    marginBottom: 15,
+    marginBottom: 20,
     textAlign: 'center',
+    fontSize: 16,
+    color: '#333',
   },
   modalButton: {
-    backgroundColor: 'purple',
+    backgroundColor: '#6c63ff',
     borderRadius: 10,
     paddingVertical: 10,
     width: '100%',
