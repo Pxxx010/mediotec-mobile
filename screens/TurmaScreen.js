@@ -1,19 +1,60 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
-
-const turmasFake = [
-  { id: '1', nome: 'Turma 031', periodo: 'Noite', horario: 'Segunda 18:00 - 20:00', professor: 'Prof. João', icone: 'book-outline' },
-  { id: '2', nome: 'Turma 032', periodo: 'Manhã', horario: 'Terça 10:00 - 12:00', professor: 'Prof. Ana', icone: 'book-outline' },
-];
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const TurmasScreen = () => {
   const navigation = useNavigation();
   const [disciplinas, setDisciplinas] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setDisciplinas(turmasFake);
+    const fetchClasses = async () => {
+      try {
+        const token = await AsyncStorage.getItem('@access_token');
+        if (!token) {
+          Alert.alert('Erro', 'Usuário não autenticado. Por favor, faça login novamente.');
+          return;
+        }
+
+        const response = await fetch('https://backend-medio-tech-senac.onrender.com/classes?page=1&limit=0&noPagination=true', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(`Erro na API: ${response.status}`);
+        }
+
+        const result = await response.json();
+
+        if (!Array.isArray(result.data)) {
+          throw new Error('Resposta inesperada da API');
+        }
+
+        const classes = result.data.map(item => ({
+          id: item.id.toString(),
+          nome: item.name,
+          periodo: `${item.year}º Ano - Semestre ${item.semester}`,
+          horario: 'Horário não disponível', // Substitua com horários reais se disponíveis
+          professor: item.TeachingAssignment.length > 0
+            ? `Prof. ${item.TeachingAssignment[0].teacher.firstName} ${item.TeachingAssignment[0].teacher.lastName}`
+            : 'Professor não atribuído',
+          icone: 'book-outline',
+        }));
+
+        setDisciplinas(classes);
+      } catch (error) {
+        console.error('Erro ao buscar turmas:', error);
+        Alert.alert('Erro', 'Não foi possível carregar as turmas. Tente novamente mais tarde.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchClasses();
   }, []);
 
   const renderItem = ({ item }) => (
@@ -35,21 +76,26 @@ const TurmasScreen = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Turmas</Text>
-      <FlatList
-        data={disciplinas}
-        renderItem={renderItem}
-        keyExtractor={item => item.id}
-      />
+      {loading ? (
+        <ActivityIndicator size="large" color="#004B8D"/>
+      ) : (
+        <FlatList
+          data={disciplinas}
+          renderItem={renderItem}
+          keyExtractor={item => item.id}
+        />
+      )}
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 20,
     paddingHorizontal: 10,
-    backgroundColor: '#f2f2f2',
+    backgroundColor: '#ffffff', // Azul claro para o fundo
   },
   header: {
     fontSize: 24,
@@ -57,11 +103,12 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     marginTop: 30,
     textAlign: 'center',
+    color: '#004B8D', // Azul principal
   },
   card: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: '#ffffff', // Branco para contraste
     padding: 15,
     marginVertical: 10,
     borderRadius: 10,
@@ -69,9 +116,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 10,
     elevation: 5,
+    borderColor: '#004B8D', // Borda azul suave
+    borderWidth: 1,
   },
   iconButton: {
-    backgroundColor: 'purple',
+    backgroundColor: '#004B8D', // Azul principal
     padding: 10,
     borderRadius: 10,
     marginRight: 15,
@@ -82,46 +131,14 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#004B8D', // Azul principal
   },
   details: {
     fontSize: 14,
-    color: '#666',
+    color: '#333', // Texto secundário mais visível
     marginTop: 5,
   },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.5)',
-  },
-  modalContent: {
-    backgroundColor: '#fff',
-    padding: 20,
-    borderRadius: 10,
-    width: '80%',
-    alignItems: 'center',
-  },
-  modalTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 15,
-  },
-  modalText: {
-    fontSize: 18,
-    marginBottom: 10,
-  },
-  closeButton: {
-    marginTop: 20,
-    backgroundColor: 'purple',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-  },
-  closeButtonText: {
-    color: '#fff',
-    fontWeight: 'bold',
-  },
 });
+
 
 export default TurmasScreen;

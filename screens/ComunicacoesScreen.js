@@ -1,26 +1,41 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity, Modal, Button } from 'react-native';
+import {
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  Modal,
+  TextInput,
+} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import LottieView from 'lottie-react-native'; // Importando o Lottie
+import LottieView from 'lottie-react-native';
 
 const ComunicadosScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [comunicadoSelecionado, setComunicadoSelecionado] = useState(null);
   const [comunicados, setComunicados] = useState([]);
+  const [filteredComunicados, setFilteredComunicados] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const fetchAnnouncements = async () => {
     try {
       const token = await AsyncStorage.getItem('@access_token');
-      const response = await fetch('https://backend-medio-tech-senac.onrender.com/announcements/read', {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
+      const response = await fetch(
+        'https://backend-medio-tech-senac.onrender.com/announcements/read',
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       const data = await response.json();
       setComunicados(data.data);
+      setFilteredComunicados(data.data);
     } catch (error) {
-      console.error("Erro ao buscar comunicados:", error);
+      console.error('Erro ao buscar comunicados:', error);
     } finally {
       setLoading(false);
     }
@@ -30,6 +45,14 @@ const ComunicadosScreen = () => {
     fetchAnnouncements();
   }, []);
 
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+    const filtered = comunicados.filter((item) =>
+      item.title.toLowerCase().includes(query.toLowerCase())
+    );
+    setFilteredComunicados(filtered);
+  };
+
   const renderItem = ({ item }) => (
     <TouchableOpacity
       style={styles.card}
@@ -38,10 +61,12 @@ const ComunicadosScreen = () => {
         setModalVisible(true);
       }}
     >
-      <Image source={require('../img/not.png')} style={styles.image}/>
+      <Image source={require('../img/not.png')} style={styles.image} />
       <View style={styles.cardContent}>
         <Text style={styles.titulo}>{item.title}</Text>
-        <Text style={styles.descricao}>{item.content}</Text>
+        <Text style={styles.descricao} numberOfLines={2}>
+          {item.content}
+        </Text>
       </View>
     </TouchableOpacity>
   );
@@ -49,25 +74,32 @@ const ComunicadosScreen = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Comunicados</Text>
+      <TextInput
+        style={styles.searchInput}
+        placeholder="Pesquisar comunicados..."
+        placeholderTextColor="#666"
+        value={searchQuery}
+        onChangeText={handleSearch}
+      />
       {loading ? (
         <LottieView
-          source={require('../assets/loader.json')} // Loader
+          source={require('../assets/loader.json')}
           autoPlay
           loop
-          style={styles.loader} // Loader Styles
+          style={styles.loader}
         />
       ) : (
         <FlatList
-          data={comunicados}
+          data={filteredComunicados}
           renderItem={renderItem}
-          keyExtractor={item => item.id.toString()}
+          keyExtractor={(item) => item.id.toString()}
         />
       )}
 
       {/* Modal para exibir o comunicado completo */}
       {comunicadoSelecionado && (
         <Modal
-          animationType="fade"
+          animationType="slide"
           transparent={true}
           visible={modalVisible}
           onRequestClose={() => setModalVisible(!modalVisible)}
@@ -77,7 +109,12 @@ const ComunicadosScreen = () => {
               <Image source={require('../img/not.png')} style={styles.modalImage} />
               <Text style={styles.modalTitulo}>{comunicadoSelecionado.title}</Text>
               <Text style={styles.modalDescricao}>{comunicadoSelecionado.content}</Text>
-              <Button title="Fechar" onPress={() => setModalVisible(false)} />
+              <TouchableOpacity
+                style={styles.closeButton}
+                onPress={() => setModalVisible(false)}
+              >
+                <Text style={styles.closeButtonText}>Fechar</Text>
+              </TouchableOpacity>
             </View>
           </View>
         </Modal>
@@ -89,15 +126,26 @@ const ComunicadosScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 20,
-    backgroundColor: '#f2f2f2', // Fundo mais suave
+    padding: 20,
+    backgroundColor: '#fffff',
   },
   header: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 20,
-    marginTop: 30,
+    color: '#004B8D',
     textAlign: 'center',
+    marginBottom: 20,
+    marginTop: 30
+  },
+  searchInput: {
+    backgroundColor: '#ffffff',
+    padding: 10,
+    borderRadius: 8,
+    fontSize: 16,
+    marginBottom: 20,
+    color: '#333',
+    borderColor: '#004B8D',
+    borderWidth: 1,
   },
   card: {
     flexDirection: 'row',
@@ -110,12 +158,14 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 5,
     shadowOffset: { width: 0, height: 2 },
+    borderColor: '#004B8D',
+    borderWidth: 1,
   },
   image: {
     width: 50,
     height: 50,
     marginRight: 15,
-    borderRadius: 25, // Torna a imagem circular
+    borderRadius: 25,
   },
   cardContent: {
     flex: 1,
@@ -123,7 +173,7 @@ const styles = StyleSheet.create({
   titulo: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#333', // Cor do texto mais escura
+    color: '#004B8D',
   },
   descricao: {
     fontSize: 14,
@@ -133,46 +183,48 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.7)', // Fundo escurecido para o modal
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalContent: {
-    width: '80%',
+    width: '85%',
     backgroundColor: '#ffffff',
     borderRadius: 10,
     padding: 20,
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOpacity: 0.2,
-    shadowRadius: 10,
-    shadowOffset: { width: 0, height: 2 },
   },
   modalImage: {
     width: 100,
     height: 100,
-    borderRadius: 50, // Torna a imagem circular
+    borderRadius: 50,
     marginBottom: 20,
   },
   modalTitulo: {
     fontSize: 24,
     fontWeight: 'bold',
+    color: '#004B8D',
     marginBottom: 10,
-    color: '#333',
   },
   modalDescricao: {
-    fontSize: 18,
-    marginBottom: 20,
+    fontSize: 16,
     color: '#666',
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  closeButton: {
+    backgroundColor: '#004B8D',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+  },
+  closeButtonText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#fff',
   },
   loader: {
-    width: 250, // Tamanho maior
-    height: 250, // Tamanho maior
-    alignSelf: 'center', // Centraliza horizontalmente
-    justifyContent: 'center', // Garante que ele esteja no centro verticalmente
-    position: 'absolute', // Garante que ele esteja sobre o conteúdo
-    top: '50%', // Centraliza verticalmente
-    left: '50%', // Centraliza horizontalmente
-    marginTop: -125, // Ajuste de posicionamento para o centro exato
-    marginLeft: -125, // Ajuste de posicionamento para o centro exato
+    width: 200,
+    height: 200,
+    alignSelf: 'center',
   },
 });
 

@@ -6,19 +6,16 @@ const PerfilScreen = ({ onLogout }) => {
   const [userName, setUserName] = useState('');
   const [userRole, setUserRole] = useState('Estudante');
   const [userEmail, setUserEmail] = useState('');
-  const [userToken, setUserToken] = useState('');
 
   useEffect(() => {
     const getUserData = async () => {
       try {
         const name = await AsyncStorage.getItem('@user_name');
         const email = await AsyncStorage.getItem('@user_email');
-        const token = await AsyncStorage.getItem('@access_token');
         const cargo = await AsyncStorage.getItem('@user_role');
 
         if (name) setUserName(name);
         if (email) setUserEmail(email);
-        if (token) setUserToken(token);
         if (cargo) setUserRole(cargo);
       } catch (e) {
         console.error('Erro ao obter os dados de autenticação', e);
@@ -30,34 +27,21 @@ const PerfilScreen = ({ onLogout }) => {
 
   const handleLogout = async () => {
     try {
-      const name = await AsyncStorage.getItem('@user_name');
-      const email = await AsyncStorage.getItem('@user_email');
-  
-      // Log de Logout
-      console.log('-------------------')
-      console.log(`Usuário deslogado:`);
-      console.log(`Usuário: ${name}`);
-      console.log(`Email: ${email}`);
-      console.log('-------------------')
-
-  
-      // Remove todos os dados do usuario logado
       await AsyncStorage.multiRemove(['@user_name', '@user_email', '@access_token']);
-  
-      // Mensagem de logout
       Alert.alert("Logout", "Você foi deslogado com sucesso!", [{ text: "OK", onPress: onLogout }]);
     } catch (e) {
       console.error('Erro ao limpar os dados de autenticação', e);
       Alert.alert("Erro", "Não foi possível realizar o logout. Tente novamente.");
     }
   };
+
   return (
     <View style={styles.container}>
       <Image
         source={require('../img/avatar.png')}
         style={styles.foto}
       />
-      <Text style={styles.header}>Perfil do Usuário</Text>
+      <Text style={styles.header}>Perfil</Text>
       <View style={styles.infoContainer}>
         <Text style={styles.label}>Nome:</Text>
         <Text style={styles.text}>{userName}</Text>
@@ -77,22 +61,25 @@ const PerfilScreen = ({ onLogout }) => {
   );
 };
 
-// Estilos para PerfilScreen
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    backgroundColor: '#ffffff', // Fundo branco
     alignItems: 'center',
+    justifyContent: 'center',
     padding: 20,
-    backgroundColor: '#f9f9f9',
   },
   foto: {
-    width: 150,
-    height: 150,
-    borderRadius: 75,
+    width: 120,
+    height: 120,
+    borderRadius: 60,
     marginBottom: 20,
-    borderWidth: 2,
-    borderColor: '#ddd',
+    borderWidth: 3,
+    borderColor: '#004B8D',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
   },
   header: {
     fontSize: 24,
@@ -102,34 +89,44 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   infoContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+    width: '90%',
+    marginBottom: 15,
+    backgroundColor: '#f7f7f7',
+    borderRadius: 10,
+    padding: 15,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 3,
   },
   label: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '600',
     color: '#555',
   },
   text: {
-    fontSize: 18,
-    color: '#777',
+    fontSize: 16,
+    color: '#333',
+    marginTop: 5,
   },
   logoutButton: {
-    backgroundColor: 'purple',
+    backgroundColor: '#004B8D',
     borderRadius: 10,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
+    paddingVertical: 12,
+    paddingHorizontal: 30,
     marginTop: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 5,
   },
   buttonText: {
-    textAlign: 'center',
     color: '#fff',
     fontWeight: 'bold',
+    fontSize: 16,
+    textAlign: 'center',
   },
 });
 

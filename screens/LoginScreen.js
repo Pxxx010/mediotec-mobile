@@ -41,6 +41,7 @@ const LoginScreen = ({ onLogin }) => {
 
       const data = response.data;
       await storeUserData(data.user.name, data.user.email, data.accessToken);
+      console.log(data.accessToken);
       onLogin(data.user.name, data.user.email);
       setWelcomeModalVisible(true);
     } catch (error) {
