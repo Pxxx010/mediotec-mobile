@@ -91,6 +91,8 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 20,
     backgroundColor: '#f2f2f2', // Fundo mais suave
+    justifyContent: 'center', // Centraliza no eixo vertical
+    alignItems: 'center', // Centraliza no eixo horizontal
   },
   header: {
     fontSize: 24,
@@ -104,13 +106,14 @@ const styles = StyleSheet.create({
     padding: 15,
     marginVertical: 8,
     backgroundColor: '#ffffff',
-    borderRadius: 10,
+    borderRadius: 20,
     elevation: 5,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    shadowOffset: { width: 0, height: 2 },
+    width: 370, // Largura fixa em pixels
+    height: 100, // Altura fixa em pixels
+    justifyContent: 'center', // Centraliza no eixo principal (horizontal)
+    alignItems: 'center', // Centraliza no eixo cruzado (vertical)
   },
+  
   image: {
     width: 50,
     height: 50,
