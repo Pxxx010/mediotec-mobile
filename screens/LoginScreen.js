@@ -21,9 +21,23 @@ const LoginScreen = ({ onLogin }) => {
 
   const storeUserData = async (name, email, token) => {
     try {
+      // Decodificando o payload do token
+      const payloadBase64 = token.split('.')[1]; // Pega o payload (segunda parte do JWT)
+      const decodedPayload = JSON.parse(atob(payloadBase64)); // Decodifica de Base64 e converte para objeto JSON
+  
+      const userId = decodedPayload.sub;
+      const userRole = decodedPayload.userType;
+
+      const payload = decodedPayload;
+
+      console.log(payload)
+  
+      // Armazena os dados no AsyncStorage
       await AsyncStorage.setItem('@user_name', name);
       await AsyncStorage.setItem('@user_email', email);
       await AsyncStorage.setItem('@access_token', token);
+      await AsyncStorage.setItem('@user_role', userRole);
+      await AsyncStorage.setItem('@user_id', String(userId));
     } catch (e) {
       console.error('Erro ao salvar os dados de autenticação', e);
     }

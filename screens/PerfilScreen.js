@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const PerfilScreen = ({ onLogout }) => {
   const [userName, setUserName] = useState('');
-  const [userRole, setUserRole] = useState('Estudante');
+  const [userRole, setUserRole] = useState('');
   const [userEmail, setUserEmail] = useState('');
 
   useEffect(() => {
