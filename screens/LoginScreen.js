@@ -13,7 +13,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LoginScreen = ({ onLogin }) => {
-  const [matricula, setMatricula] = useState('root@gmail.com');
+  const [matricula, setMatricula] = useState('adecarlo@gmail.com'); // coor: root@gmail.com | estudante: adecarlo@gmail.com | professor: idemoraes@gmail.com
   const [senha, setSenha] = useState('20Mm292,&*m23210AMS2im1083ASNms01@');
   const [modalVisible, setModalVisible] = useState(false);
   const [welcomeModalVisible, setWelcomeModalVisible] = useState(false);
