@@ -54,33 +54,37 @@ const ComunicadosScreen = () => {
   };
 
   const renderItem = ({ item }) => (
-    <TouchableOpacity
-      style={styles.card}
-      onPress={() => {
-        setComunicadoSelecionado(item);
-        setModalVisible(true);
-      }}
-    >
-      <Image source={require('../img/not.png')} style={styles.image} />
-      <View style={styles.cardContent}>
-        <Text style={styles.titulo}>{item.title}</Text>
-        <Text style={styles.descricao} numberOfLines={2}>
-          {item.content}
-        </Text>
-      </View>
-    </TouchableOpacity>
+    <View style={styles.cardContainer}>
+      <TouchableOpacity
+        style={styles.card}
+        onPress={() => {
+          setComunicadoSelecionado(item);
+          setModalVisible(true);
+        }}
+      >
+        <Image source={require('../img/not.png')} style={styles.image} />
+        <View style={styles.cardContent}>
+          <Text style={styles.titulo}>{item.title}</Text>
+          <Text style={styles.descricao} numberOfLines={2}>
+            {item.content}
+          </Text>
+        </View>
+      </TouchableOpacity>
+    </View>
   );
 
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Comunicados</Text>
-      <TextInput
-        style={styles.searchInput}
-        placeholder="Pesquisar comunicados..."
-        placeholderTextColor="#666"
-        value={searchQuery}
-        onChangeText={handleSearch}
-      />
+      <View style={styles.searchContainer}>
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Pesquisar comunicados..."
+          placeholderTextColor="#666"
+          value={searchQuery}
+          onChangeText={handleSearch}
+        />
+      </View>
       {loading ? (
         <LottieView
           source={require('../assets/loader.json')}
@@ -88,11 +92,16 @@ const ComunicadosScreen = () => {
           loop
           style={styles.loader}
         />
+      ) : filteredComunicados.length === 0 ? (
+        <View style={styles.noResultsContainer}>
+          <Text style={styles.noResultsText}>Comunicado não encontrado</Text>
+        </View>
       ) : (
         <FlatList
           data={filteredComunicados}
           renderItem={renderItem}
           keyExtractor={(item) => item.id.toString()}
+          contentContainerStyle={styles.listContainer} // Estilo aplicado na lista
         />
       )}
 
@@ -127,7 +136,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 20,
-    backgroundColor: '#f2f2f2', // Fundo mais suave
+    backgroundColor: '#f2f2f2',
   },
   header: {
     fontSize: 24,
@@ -135,29 +144,44 @@ const styles = StyleSheet.create({
     color: '#004B8D',
     textAlign: 'center',
     marginBottom: 20,
-    marginTop: 30
+    marginTop: 30,
+  },
+  searchContainer: {
+    alignItems: 'center',
+    marginBottom: 20,
   },
   searchInput: {
     backgroundColor: '#ffffff',
     padding: 10,
     borderRadius: 8,
     fontSize: 16,
-    marginBottom: 20,
     color: '#333',
     borderColor: '#004B8D',
     borderWidth: 1,
+    height: 40,
+    width: '95%',
+  },
+  listContainer: {
+    alignItems: 'center', // Centraliza os itens na tela
+  },
+  cardContainer: {
+    width: '95%', // Define a largura de cada cartão
+    alignItems: 'center', // Centraliza o cartão horizontalmente
+    marginBottom: 10,
   },
   card: {
     flexDirection: 'row',
     padding: 15,
-    marginVertical: 8,
     backgroundColor: '#ffffff',
-    borderRadius: 20,
+    borderRadius: 15,
     elevation: 5,
     shadowColor: '#000',
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.15,
     shadowRadius: 5,
     shadowOffset: { width: 0, height: 2 },
+    borderColor: '#004B8D',
+    borderWidth: 1,
+    width: '100%',
   },
   image: {
     width: 50,
@@ -175,6 +199,15 @@ const styles = StyleSheet.create({
   },
   descricao: {
     fontSize: 14,
+    color: '#666',
+  },
+  noResultsContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  noResultsText: {
+    fontSize: 18,
     color: '#666',
   },
   modalContainer: {

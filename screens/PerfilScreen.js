@@ -27,7 +27,7 @@ const PerfilScreen = ({ onLogout }) => {
 
   const handleLogout = async () => {
     try {
-      await AsyncStorage.multiRemove(['@user_name', '@user_email', '@access_token']);
+      await AsyncStorage.multiRemove(['@user_name', '@user_email', '@access_token', '@user_role','@user_id' ]);
       Alert.alert("Logout", "Você foi deslogado com sucesso!", [{ text: "OK", onPress: onLogout }]);
     } catch (e) {
       console.error('Erro ao limpar os dados de autenticação', e);

@@ -27,10 +27,6 @@ const LoginScreen = ({ onLogin }) => {
   
       const userId = decodedPayload.sub;
       const userRole = decodedPayload.userType;
-
-      const payload = decodedPayload;
-
-      console.log(payload)
   
       // Armazena os dados no AsyncStorage
       await AsyncStorage.setItem('@user_name', name);
