@@ -27,7 +27,7 @@ function TurmasStack() {
         name="ConceitosScreen"
         component={ConceitosScreen}
         options={({ route }) => ({
-          title: `Conceitos de ${route.params?.disciplinaNome || ''}`,
+          title: `Disciplinas ${route.params?.disciplinaNome || ''}`,
         })}
       />
     </Stack.Navigator>

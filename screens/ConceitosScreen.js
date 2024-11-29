@@ -122,7 +122,7 @@ const ConceitosScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Conceitos</Text>
+      <Text style={styles.header}>Disciplinas</Text>
       {loading ? (
         <ActivityIndicator size="large" color="#004B8D" />
       ) : (
