@@ -33,7 +33,7 @@ const ConceitosScreen = () => {
         }
 
         const response = await fetch(
-          'https://backend-medio-tech-senac.onrender.com/classes?page=1&limit=0&noPagination=true',
+          'https://backend-medio-tech-senac.onrender.com/classes?withConcepts=true&noPagination=true',
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -53,18 +53,33 @@ const ConceitosScreen = () => {
 
         const selectedClass = result.data.find((c) => c.id.toString() === turmaId);
 
+        console.log(selectedClass);
+
         if (!selectedClass) {
           throw new Error('Turma não encontrada');
         }
 
-        const concepts = selectedClass.TeachingAssignment.map((ta) => ({
-          id: ta.id.toString(),
-          disciplina: ta.subject.name,
-          unidade1: 'Nota não disponível',
-          unidade2: 'Nota não disponível',
-          notaFinal: 'Nota não disponível',
-          icone: 'book-outline',
-        }));
+        const concepts = selectedClass.TeachingAssignment.map((ta) => {
+          
+          // console.log(ta);
+
+          const unidade1 = ta.Grade.find((grade) => grade.avaliation === 1)?.score || 'Nota não disponível';
+          const unidade2 = ta.Grade.find((grade) => grade.avaliation === 2)?.score || 'Nota não disponível';
+          const notaFinal = typeof(unidade1) === 'number' && typeof(unidade2) === 'number' ? (unidade1 + unidade2) / 2 : 'Nota final não disponível';
+
+          console.log(unidade1);
+          console.log(unidade2);
+          console.log(notaFinal);
+
+          return {
+            id: ta.id.toString(),
+            disciplina: ta.subject.name,
+            unidade1,
+            unidade2,
+            notaFinal,
+            icone: 'book-outline',
+        };
+      });
 
         setConceitos(concepts);
       } catch (error) {
